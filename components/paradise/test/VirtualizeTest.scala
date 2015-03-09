@@ -9,8 +9,21 @@ class VirtualizeSpec extends FlatSpec with ShouldMatchers with EmbeddedControls 
     if (cs forall (_ == true)) tb else eb
   }
 
+  def __ifThenElse[T](cs: String, tb: => T, eb: => T): T = {
+    if (cs == "true") tb else eb
+  }
+
   def infix_==[T](x1: List[T], x2: List[T]): Boolean = {
     (x1 zip x2) forall (p => p._1 == p._2)
+  }
+
+  "virtualizeIfString" should "be virtualized" in {
+
+    @virtualize
+    def virtualizeIfTest(cs: String) = if (cs) "yep" else "nope"
+
+    virtualizeIfTest("true") should be("yep")
+    virtualizeIfTest("false") should be("nope")
   }
 
   "virtualizeIfTest" should "be virtualized" in {
